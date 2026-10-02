@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Distributed Traffic Monitor - SOC</title>
+<link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body data-status="NORMAL">
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo"></span>
+    <div>
+      <h1>Distributed Traffic Monitor</h1>
+      <p class="sub">coordinated anomaly detection &middot; defensive simulation</p>
+    </div>
+  </div>
+  <div class="conn-pill" id="connPill">CONNECTING</div>
+  <div class="status-badge" id="statusBadge">NORMAL</div>
+  <div class="controls">
+    <button data-scenario="single_spike">Single spike</button>
+    <button data-scenario="coordinated_spike" class="danger">Coordinated spike</button>
+    <button data-scenario="low_slow">Low &amp; slow</button>
+    <button data-scenario="flood" class="danger">Flood</button>
+    <button id="resetBtn" class="ghost">Reset</button>
+    <button id="autoBtn" class="toggle">Auto demo: OFF</button>
+  </div>
+</header>
+
+<section class="scenario-banner" id="scenarioBanner" hidden>
+  <span class="pulse"></span>
+  <span id="scenarioText"></span>
+  <span id="scenarioCountdown" class="mono"></span>
+</section>
+
+<section class="kpis">
+  <div class="kpi"><span class="kpi-label">Aggregate rate</span><span class="kpi-value mono" id="kpiRate">-</span><span class="kpi-sub" id="kpiRateSub"></span></div>
+  <div class="kpi"><span class="kpi-label">Aggregate bandwidth</span><span class="kpi-value mono" id="kpiBytes">-</span><span class="kpi-sub" id="kpiBytesSub"></span></div>
+  <div class="kpi"><span class="kpi-label">Active connections</span><span class="kpi-value mono" id="kpiConns">-</span><span class="kpi-sub" id="kpiConnsSub"></span></div>
+  <div class="kpi"><span class="kpi-label">Agents flagged</span><span class="kpi-value mono" id="kpiFlagged">-</span><span class="kpi-sub" id="kpiFlaggedSub"></span></div>
+</section>
+
+<main class="grid">
+  <section class="panel">
+    <div class="panel-head"><h2>Request rate - aggregate &amp; per-agent</h2><div class="legend" id="rateLegend"></div></div>
+    <canvas id="rateChart" class="chart-lg"></canvas>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Protected API (authoritative view)</h2></div>
+    <div class="protected-grid" id="protectedBox"><div class="muted">waiting for data...</div></div>
+    <div class="panel-head" style="margin-top:14px"><h2>Bandwidth (aggregate)</h2></div>
+    <canvas id="bytesChart" class="chart-sm"></canvas>
+  </section>
+
+  <section class="panel wide">
+    <div class="panel-head"><h2>Monitoring agents</h2><span class="hint">each card shows the segment's own local-detector verdict</span></div>
+    <div class="agents" id="agentsGrid"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Detection comparison</h2><span class="hint">local-only vs centralized</span></div>
+    <div class="compare-tiles" id="compareTiles"></div>
+    <p class="compare-note">Local-only detectors evaluate each network segment in isolation: they flag
+      an anomaly only when <em>that segment alone</em> crosses its local threshold. The centralized
+      detector correlates all agents, so coordinated pressure that stays below every local threshold
+      is still caught in the aggregate.</p>
+    <table class="events">
+      <thead><tr><th>time</th><th>scenario</th><th>local-only</th><th>centralized</th><th>verdict</th></tr></thead>
+      <tbody id="eventsBody"><tr><td colspan="5" class="muted">no scenario events yet</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Security alerts</h2><span class="hint" id="alertCount"></span></div>
+    <div class="alerts" id="alertsBox"><div class="alert empty">No alerts recorded yet.</div></div>
+  </section>
+</main>
+
+<footer class="foot">Defensive monitoring demo - all traffic is locally simulated. <span class="mono" id="footInfo"></span></footer>
+
+<script src="/static/dashboard.js"></script>
+</body>
+</html>
