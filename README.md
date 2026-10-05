@@ -33,6 +33,8 @@ Python — no external services, no CDN dependencies.
 ## Quickstart
 
 ```bash
+git clone https://github.com/Raunak-23/Network_Traffic_Monitor.git
+cd Network_Traffic_Monitor
 pip install -r requirements.txt
 python run_all.py
 # open the dashboard
